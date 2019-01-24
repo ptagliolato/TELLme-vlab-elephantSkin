@@ -11,6 +11,7 @@ library(shinydashboardPlus)
 library(shinydashboard)
 #devtools::install_github('andrewsali/shinycssloaders')
 library(shinycssloaders)
+#install.packages("shinyjs")
 library(shinyjs)
 
 dashboardPagePlus(
