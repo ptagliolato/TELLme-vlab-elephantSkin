@@ -5,6 +5,9 @@
 # http://shiny.rstudio.com
 #
 
+#TODO: check for eventual issues with raster saved by gdaldem and then copied to fileoutput.
+#     Could it affect a multi-user environment?
+
 library(shiny)
 options(shiny.maxRequestSize=1000*1024^2) 
 shinyServer(function(input, output, session) {
