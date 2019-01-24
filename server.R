@@ -7,7 +7,7 @@
 
 library(shiny)
 options(shiny.maxRequestSize=1000*1024^2) 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
   
   output$mapInput<-renderPlot({
     req(input$file1)
@@ -16,6 +16,8 @@ shinyServer(function(input, output) {
     plot(raster(input_dem),col=gray.colors(256))
   })
   
+  # TODO: anticipate rendering input map before processed output.
+  # Consider reactive value/action button to process the image on user request.
   output$mapImg <- renderPlot({
     
     #alg ZevenbergenThorne | Horn
@@ -54,6 +56,7 @@ shinyServer(function(input, output) {
     }
     
     else{
+      
       library(rgdal)
       library(gdalUtils)
       
@@ -61,6 +64,8 @@ shinyServer(function(input, output) {
       
       #plot(raster(input_dem),col=gray.colors(256))
       
+      withProgress(message = 'Making plot', value = 0.5,{
+        
       # check params depending on input_mode. Cf. https://www.gdal.org/gdaldem.html
       if(input_mode=="hillshade"){
         output_hillshade <- gdalUtils::gdaldem(mode=input_mode,
@@ -72,12 +77,20 @@ shinyServer(function(input, output) {
       else{
         output_hillshade <- gdalUtils::gdaldem(mode=input_mode,
                                                input_dem=input_dem, 
-                                               output=paste("output_",input_mode,".tif", sep=""),
+                                               output=paste("out_",input_mode,".tif", sep=""),
                                                output_Raster=TRUE,verbose=TRUE
         )
       }
+        
       plot(output_hillshade,col=gray.colors(256))
+      })#end progress
     }
   })
   
+  output$downloadData<-downloadHandler(filename=paste("output_",input$mode,".tif", sep=""), 
+                                       content=function(file){
+                                         #browser()
+                                         file.copy(paste("output_",input$mode,".tif", sep=""), file)
+                                       }
+  )
 })
