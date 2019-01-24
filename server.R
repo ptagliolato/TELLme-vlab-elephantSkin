@@ -60,12 +60,22 @@ shinyServer(function(input, output) {
       #gdalUtils::gdaldem("hillshade",)
       
       #plot(raster(input_dem),col=gray.colors(256))
-      output_hillshade <- gdalUtils::gdaldem(mode=input_mode,
+      
+      # check params depending on input_mode. Cf. https://www.gdal.org/gdaldem.html
+      if(input_mode=="hillshade"){
+        output_hillshade <- gdalUtils::gdaldem(mode=input_mode,
                                              input_dem=input_dem, 
                                              output=paste("output_",input_mode,".tif", sep=""),
                                              output_Raster=TRUE,verbose=TRUE, z=input$z, az=input$az, alt=input$alt
                                              )
-      
+      }
+      else{
+        output_hillshade <- gdalUtils::gdaldem(mode=input_mode,
+                                               input_dem=input_dem, 
+                                               output=paste("output_",input_mode,".tif", sep=""),
+                                               output_Raster=TRUE,verbose=TRUE
+        )
+      }
       plot(output_hillshade,col=gray.colors(256))
     }
   })

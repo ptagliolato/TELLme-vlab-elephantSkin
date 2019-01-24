@@ -17,11 +17,12 @@ dashboardPagePlus(
   collapse_sidebar = TRUE,
   dashboardHeaderPlus(
     title = tagList(
-      tags$span(class = "logo-lg", "TELLme Erasmus+ Project - Hillshade"),
-      tags$img(src = "http://www.get-it.it/assets/img/icon/logo1-ico.png", width = "50px", height = "50px")
+      tags$span(class = "logo-lg", "TELLme Erasmus+ Project - Elephant Skin (Hillshade)"),
+      #tags$img(src = "http://www.get-it.it/assets/img/icon/logo1-ico.png", width = "50px", height = "50px")
+      tags$img(src = "http://tellmehub.get-it.it/static/img/logo1_200px.png", width = "100px", height = "50px")
     )
     # fixed = FALSE,
-    # enable_rightsidebar = TRUE,
+     ,enable_rightsidebar = TRUE
     # rightSidebarIcon = "gears",
     # tags$li(class ="dropdown", 
     #         tags$a(
@@ -40,19 +41,21 @@ dashboardPagePlus(
     #         )
     # )
   ),
+  
   dashboardSidebar(
     collapsed = TRUE,
     sidebarMenu(
       menuItem("Elaboration", tabName = "site", icon = icon("map", lib = "font-awesome"))
     )
   ),
+  
   dashboardBody(
     tabItems(
-      # First tab content: map
+      # First tab content: input parameters
       tabItem(tabName = "site",
               fluidRow(
                 boxPlus(
-                  width = 6,
+                  width = 4, # bootstrap grid system (12 columns total)
                   title = "Elaboration parameters", 
                   closable = FALSE, 
                   status = "info", 
@@ -60,25 +63,27 @@ dashboardPagePlus(
                   collapsible = TRUE,
                   enable_sidebar = TRUE,
                   sidebar_width = 25,
-                  sidebar_start_open = TRUE,
+                  sidebar_start_open = FALSE,
                   sidebar_content = tagList(
-                    tags$p("The blue circles identify the amount of datasets shared in the site, the pins identify the LTER sites distributed in the world. By clicking on one of these you can get more information on the site and on the data sets shared by it."),
-                    tags$p(tags$b("Press i for collaps this slidebar."))
+                    tags$p("Upload a Digital Elevation Model (DEM) raster file (.tif), then tune the parameters to adjust the 'Elephant Skin' (Hillshade) map according to your needs"),
+                    #tags$p("Default par"),
+                    tags$p(tags$b("Press i to collapse this slidebar."))
                   ),
                   #Input: Select a file ----
-                  fileInput("file1", "Choose First File",
+                  fileInput("file1", "Choose Digital Elevation Model File (raster image)",
                             multiple = FALSE,
                             accept = c("*/*",
                                        "*,*",
                                        ".*")),
                   selectInput("mode", "choose mode",
                               choices = list("hillshade" = "hillshade",
-                                             "slope" = "slope",
+                                             #"slope" = "slope",
                                              "aspect" = "aspect",
-                                             "color-relief"= "color-relief",
-                                             "TRI"="TRI",
-                                             "TPI"="TPI",
-                                             "roughness"="roughness")),
+                                             #"color-relief"= "color-relief",
+                                             #"TRI"="TRI",
+                                             "TPI"="TPI"
+                                             #"roughness"="roughness"
+                                             )),
                   sliderInput("z",
                               "Vertical exaggeration",
                               min = 1,
@@ -98,9 +103,17 @@ dashboardPagePlus(
                   height = "650px", style = "padding-left: 10px;padding-right: 10px;"
                 ),
                 fluidRow(
+                  # display input raster
                   boxPlus(
-                    width = 6,
-                    title = "Map Input", 
+                    #
+                    # actual map
+                    #
+                    plotOutput("mapInput"),
+                    #
+                    # boxPlus rendering configuration
+                    #
+                    width = 7,
+                    title = "Input Map", 
                     closable = FALSE, 
                     status = "info", 
                     solidHeader = FALSE, 
@@ -109,25 +122,32 @@ dashboardPagePlus(
                     sidebar_width = 25,
                     sidebar_start_open = FALSE,
                     sidebar_content = tagList(
-                      tags$p("Through this panel it is possible to filter the sites of the LTER network, by selecting one, more information can be displayed regarding the parameters measured in it.")
+                      tags$p("Original raster file")
                     ),
-                    plotOutput("mapInput"),
                     style = "padding-left: 10px;padding-right: 10px;"
                   ),
+                  # display output map
                   boxPlus(
-                    width = 6,
-                    title = "Map elaborated", 
+                    #
+                    # actual map
+                    #
+                    plotOutput("mapImg"),
+                    #
+                    # boxPlus rendering configuration
+                    #
+                    width = 7,
+                    title = "Elaborated map", 
                     closable = FALSE, 
                     status = "info", 
                     solidHeader = FALSE, 
                     collapsible = TRUE,
+                    # sidebar with info
                     enable_sidebar = TRUE,
                     sidebar_width = 25,
                     sidebar_start_open = FALSE,
                     sidebar_content = tagList(
-                      tags$p("This panel show the the number of the parameter classes and their type collected in the site as squares in a grid.")
+                      tags$p("Elaborated map")
                     ),
-                    plotOutput("mapImg"),
                     style = "padding-left: 10px;padding-right: 10px;"
                   )
                 )
