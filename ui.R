@@ -11,11 +11,14 @@ library(shinydashboardPlus)
 library(shinydashboard)
 #devtools::install_github('andrewsali/shinycssloaders')
 library(shinycssloaders)
+library(shinyjs)
 
 dashboardPagePlus(
+  
   skin = "green-light",
   collapse_sidebar = TRUE,
   dashboardHeaderPlus(
+    
     title = tagList(
       tags$span(class = "logo-lg", "TELLme Erasmus+ Project - Elephant Skin (Hillshade)"),
       #tags$img(src = "http://www.get-it.it/assets/img/icon/logo1-ico.png", width = "50px", height = "50px")
@@ -50,6 +53,7 @@ dashboardPagePlus(
   ),
   
   dashboardBody(
+    useShinyjs(),
     tabItems(
       # First tab content: input parameters
       tabItem(tabName = "site",
@@ -99,7 +103,7 @@ dashboardPagePlus(
                               min = 0,
                               max = 90,
                               value = 45),
-                  downloadLink("downloadData", "Download result"),
+                  
                   height = "650px", style = "padding-left: 10px;padding-right: 10px;"
                 ),
                 fluidRow(
@@ -128,6 +132,8 @@ dashboardPagePlus(
                   ),
                   # display output map
                   boxPlus(
+                    disabled(actionButton("doPlotMap","Compute and plot output map")),
+                    disabled(downloadButton("downloadData", "Download result")),
                     #
                     # actual map
                     #
