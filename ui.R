@@ -16,10 +16,9 @@ library(shinyjs)
 
 dashboardPagePlus(
   
-  skin = "green-light",
+  skin = "black-light",
   collapse_sidebar = TRUE,
   dashboardHeaderPlus(
-    
     title = tagList(
       tags$span(class = "logo-lg", "TELLme Erasmus+ Project - Elephant Skin (Hillshade)"),
       #tags$img(src = "http://www.get-it.it/assets/img/icon/logo1-ico.png", width = "50px", height = "50px")
@@ -28,11 +27,12 @@ dashboardPagePlus(
     # fixed = FALSE,
     # ,enable_rightsidebar = TRUE
     # rightSidebarIcon = "gears",
-    
   ),
   
   dashboardSidebar(
     collapsed = TRUE,
+    disable = FALSE,
+    width = 2,
     sidebarMenu(
       menuItem("Elaboration", tabName = "site", icon = icon("map", lib = "font-awesome"))
     )
@@ -90,9 +90,10 @@ dashboardPagePlus(
                               max = 90,
                               value = 45),
                   #uiOutput("path"),
-                  height = "650px", style = "padding-left: 10px;padding-right: 10px;"
+                  height = "650px", 
+                  style = "padding-left: 10px;padding-right: 10px;"
                 ),
-                fluidRow(
+                #fluidRow(
                   # display input raster
                   boxPlus(
                     #
@@ -102,7 +103,7 @@ dashboardPagePlus(
                     #
                     # boxPlus rendering configuration
                     #
-                    width = 7,
+                    width = 4,
                     title = "Input Map", 
                     closable = FALSE, 
                     status = "info", 
@@ -127,7 +128,7 @@ dashboardPagePlus(
                     #
                     # boxPlus rendering configuration
                     #
-                    width = 7,
+                    width = 4,
                     title = "Elaborated map", 
                     closable = FALSE, 
                     status = "info", 
@@ -142,7 +143,7 @@ dashboardPagePlus(
                     ),
                     style = "padding-left: 10px;padding-right: 10px;"
                   )
-                )
+                #)
               )
       )
     )
