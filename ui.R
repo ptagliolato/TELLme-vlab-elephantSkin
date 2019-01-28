@@ -14,50 +14,63 @@ library(shinycssloaders)
 #install.packages("shinyjs")
 library(shinyjs)
 
-choices <- list("hillshade" = "hillshade",
-                #"slope" = "slope",
-                "aspect" = "aspect",
+choices <- list("elephant skin (hillshade)" = "hillshade",
+                "golden map (slope)" = "slope"
+                #,"aspect" = "aspect",
                 #"color-relief"= "color-relief",
                 #"TRI"="TRI",
-                "TPI"="TPI"
+                #"TPI"="TPI"
                 #"roughness"="roughness"
 )
 
 dashboardPagePlus(
-  
   skin = "black-light",
-  collapse_sidebar = TRUE,
+  collapse_sidebar = FALSE,
+  sidebar_fullCollapse=TRUE,
   dashboardHeaderPlus(
     title = tagList(
-      
-      tags$span(class = "logo-lg", "TELLme Erasmus+ Project - Elephant Skin (Hillshade)"),
-      #tags$img(src = "http://www.get-it.it/assets/img/icon/logo1-ico.png", width = "50px", height = "50px"),
-      tags$img(src = "http://tellmehub.get-it.it/static/img/logo1_200px.png", width = "80px", height = "40px")
+      tags$div(class = "logo-lg",
+               tags$img(src = "http://tellmehub.get-it.it/static/img/logo1_200px.png", width = "80px", height = "40px"),
+               tags$span("TELLme Erasmus+ Project - Elephant Skin (Hillshade)")
+      )
     ),
     titleWidth = 400
     # fixed = FALSE,
     ,enable_rightsidebar = TRUE,
-     rightSidebarIcon = "gears"
+    rightSidebarIcon = "gears"
   ),
   rightsidebar=rightSidebar(
-    
-    selectInput("mode", "choose mode",choices = choices),
+    #fileInput("file1", "Choose Digital Elevation Model File (raster image)",
+    #                      multiple = FALSE, accept = c("*/*","*,*",".*")),
+    #            selectInput("mode", "choose mode",choices = choices),
     sliderInput("z","Vertical exaggeration",min = 1,max = 50,value = 1),
     sliderInput("az","Azimuth of the light",min = 1,max = 360,value = 315),
     sliderInput("alt","Altitude of the light",min = 0,max = 90,value = 45)
+    
   ),
   sidebar=dashboardSidebar(
-    collapsed = TRUE,
+    collapsed = FALSE,
     disable = FALSE,
-    width = 200,
+    width = 0,
     sidebarMenu(
-      menuItem("Elaboration", tabName = "site", icon = icon("map", lib = "font-awesome")),
-      menuItem("Map", tabName = "map", icon = icon("map", lib = "font-awesome"))
+      menuItem("Elaboration", tabName = "site", icon = icon("map", lib = "font-awesome"))
+      #menuItem("Map", tabName = "map", icon = icon("map", lib = "font-awesome"))
+      # ,
+      # dropdownBlock(
+      #   fileInput("file1", "Choose Digital Elevation Model File (raster image)",
+      #             multiple = FALSE, accept = c("*/*","*,*",".*")),
+      #   selectInput("mode", "choose mode",choices = choices),
+      #   sliderInput("z","Vertical exaggeration",min = 1,max = 50,value = 1),
+      #   sliderInput("az","Azimuth of the light",min = 1,max = 360,value = 315),
+      #   sliderInput("alt","Altitude of the light",min = 0,max = 90,value = 45),
+      #   id="ss",icon = icon("map", lib = "font-awesome"),title="inputs"
+      # )
     )
   ),
   
   body=dashboardBody(
     useShinyjs(),
+    
     tabItems(
       tabItem(
         tabName = "site",
@@ -83,48 +96,81 @@ dashboardPagePlus(
         #     # sliderInput("alt","Altitude of the light",min = 0,max = 90,value = 45)
         #   )),
         
+        #fluidRow(
+        #   boxPlus(width = 12,collapsible = TRUE,
+        #           title="commands",
+        #           box(width=4, 
+        #                  fileInput("file1", "Choose Digital Elevation Model File (raster image)",
+        #                                     multiple = FALSE, accept = c("*/*","*,*",".*"))
+        #               ),
+        #           box(width=4, 
+        #                  disabled(actionButton("doPlotMap","-> Compute and plot output map ->", style="margin-bottom:15px;display:block;margin:26px 0 15px 0;"))
+        #               ),
+        #           box(width=4,
+        #               disabled(downloadButton("downloadData", "Download result")))
+        #   )
+        # ),
         fluidRow(
-          boxPlus(width = 12,collapsible = TRUE,
-                  title="commands",
-                  box(width=4, 
-                         fileInput("file1", "Choose Digital Elevation Model File (raster image)",
-                                            multiple = FALSE, accept = c("*/*","*,*",".*"))),
-                  box(width=4, 
-                         disabled(actionButton("doPlotMap","-> Compute and plot output map ->", style="margin-bottom:15px;display:block;margin:26px 0 15px 0;"))),
-                  box(width=4,
-                      disabled(downloadButton("downloadData", "Download result")))
-          )
-        ),
-        fluidRow(
-            boxPlus(# input raster plot
-              width = 6,
-              title = "Input Map", 
-              closable = FALSE, status = "info", solidHeader = FALSE, collapsible = TRUE,
-              enable_sidebar = TRUE,sidebar_width = 25,sidebar_start_open = FALSE,
-              sidebar_content = tagList(
-                tags$p("Original raster file")
+          
+          boxPlus(# inputs menu
+            width=12,
+            #title="input",
+            background = "light-blue",
+            closable=FALSE,status = "primary", solidHeader = FALSE, collapsible = FALSE,
+            #enable_sidebar = FALSE,
+            #style = "background-color:black; color:white; padding: 0 10px;",
+            fluidRow(
+              column(
+                width=6,
+                fileInput("file1", "Choose Digital Elevation Model File (raster image)",
+                          multiple = FALSE, accept = c("*/*","*,*",".*"))
               ),
-              style = "padding: 0 10px;",
-              # --- contents ---
-                 
-              
-              plotOutput("mapInput")
+              column(
+                width=6,
+                selectInput("mode", "choose mode",choices = choices)
+              )
             ),
-            
-            boxPlus(# output raster plot
-              width = 6,
-              title = "Elaborated map", 
-              closable = FALSE, status = "info", solidHeader = FALSE, collapsible = TRUE,
-              enable_sidebar = TRUE,sidebar_width = 25,sidebar_start_open = FALSE,
-              sidebar_content = tagList(
-                tags$p("Elaborated map")
+            fluidRow(
+              column(
+                offset=6,
+                width=3,
+                style="text-align:left;",
+                disabled(actionButton("doPlotMap","Compute and plot output map",icon("cog")))
               ),
-              style = "padding: 0 10px;",
-              # --- contents ---
-              
-              plotOutput("mapImg")
+              column(
+                width=3,
+                style="text-align:right;",
+                disabled(downloadButton("downloadData", "Download result"))
+              )
             )
-            
+          ),
+          
+          boxPlus(# input raster plot
+            width = 6,
+            title = "Input Map", 
+            closable = FALSE, status = "info", solidHeader = FALSE, collapsible = TRUE,
+            enable_sidebar = TRUE,sidebar_width = 25,sidebar_start_open = FALSE,
+            sidebar_content = tagList(
+              tags$p("Original raster file")
+            ),
+            style = "padding: 0 10px;",
+            # --- contents ---
+            plotOutput("mapInput")
+          ),
+          
+          boxPlus(# output raster plot
+            width = 6,
+            title = "Elaborated map", 
+            closable = FALSE, status = "info", solidHeader = FALSE, collapsible = TRUE,
+            enable_sidebar = TRUE,sidebar_width = 25,sidebar_start_open = FALSE,
+            sidebar_content = tagList(
+              tags$p("Elaborated map")
+            ),
+            style = "padding: 0 10px;",
+            plotOutput("mapImg")
+          )
+          
+          
         )#end fluidRow
       )#end tabItem
     )#end tabItems

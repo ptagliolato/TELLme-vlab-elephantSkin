@@ -13,6 +13,9 @@ library(raster)
 library(rgdal)
 library(gdalUtils)
 
+colors4slope<-c("black","#ffb701","white")
+palette4slope<-colorRampPalette(colors4slope,bias=1,interpolate="spline")
+
 options(shiny.maxRequestSize=1000*1024^2) 
 shinyServer(function(input, output, session) {
   
@@ -30,7 +33,7 @@ shinyServer(function(input, output, session) {
         input_mode<-input$mode
         
         temptiff <- tempfile(fileext = ".tif")
-        
+        #browser()
         # check params depending on input_mode. Cf. https://www.gdal.org/gdaldem.html
         if(input_mode=="hillshade"){
           out <- gdalUtils::gdaldem(mode=input_mode,
@@ -38,8 +41,14 @@ shinyServer(function(input, output, session) {
                                     output=temptiff,
                                     output_Raster=TRUE,verbose=TRUE, z=input$z, az=input$az, alt=input$alt
           )
+        }
+        else if(input_mode=="slope"){
+          out <- gdalUtils::gdaldem(mode=input_mode,
+                                    input_dem=input_dem, 
+                                    output=temptiff,
+                                    output_Raster=TRUE,verbose=TRUE, b=1, s=111120,compute_edges = TRUE
+          )
           
-          #browser()
         }
         else{
           out <- gdalUtils::gdaldem(mode=input_mode,
@@ -75,23 +84,30 @@ shinyServer(function(input, output, session) {
   # plot input raster
   output$mapInput<-renderPlot({
     withProgress(message = 'Making plot...', value = 0.5,{
-      plot(currentInputRaster(),col=gray.colors(256))
+        plot(currentInputRaster(),col=gray.colors(256))
     })
   })
   
   #on button click process input raster and plot it
   observeEvent(input$doPlotMap, ignoreInit = TRUE, {
+    
     r <- currentProcessedRaster()
-    #browser()
-    output$mapImg<-renderPlot(withProgress(message = 'Making plot...', value = 0.5,{
-      plot(r,col=gray.colors(256))
-    }))
+    output$mapImg<-renderPlot(
+      withProgress(message = 'Making plot...', value = 0.5,{
+        if(isolate(input$mode=="hillshade"))
+          plot(r,col=gray.colors(256))
+        else if(isolate(input$mode=="slope"))
+          plot(r,col=palette4slope(256))
+        else
+          plot(r,col=gray.colors(256))
+      })
+    )
   })
 
-  output$downloadData<-downloadHandler(filename=paste("output_",input$mode,".tif", sep=""), 
-                                       content=function(file){
-                                         writeRaster(currentProcessedRaster(),file, datatype = "INT1U", options=c("COMPRESSION=DEFLATE"))
-                                         # browser()
-                                       }
+  output$downloadData<-downloadHandler(
+    filename=paste("output_",input$mode,".tif", sep=""), 
+    content=function(file){
+      writeRaster(currentProcessedRaster(),file, datatype = "INT1U", options=c("COMPRESSION=DEFLATE"))
+    }
   )
 })
