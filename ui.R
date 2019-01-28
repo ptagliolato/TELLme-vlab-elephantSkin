@@ -1,4 +1,13 @@
-
+#
+# TELLme Erasmus Plus Project
+# 
+# Shiny app for dtm -> hillshade and slope maps
+# expected data: https://www.asf.alaska.edu/sar-data/palsar/terrain-corrected-rtc/
+# alos-palsar DTM high res products (geoTIFF) (DEM INT16 GeoTIFF 12.5m)
+# see also: https://www.asf.alaska.edu/asf-tutorials/dem-information/
+# obtain data from web interface: https://vertex.daac.asf.alaska.edu/
+# filtering on dataset alos-palsar
+#
 # This is the user-interface definition of a Shiny web application.
 # You can find out more about building applications with Shiny here:
 #
@@ -13,6 +22,8 @@ library(shinydashboard)
 library(shinycssloaders)
 #install.packages("shinyjs")
 library(shinyjs)
+library(leaflet)
+library(mapview)
 
 choices <- list("elephant skin (hillshade)" = "hillshade",
                 "golden map (slope)" = "slope"
@@ -74,42 +85,6 @@ dashboardPagePlus(
     tabItems(
       tabItem(
         tabName = "site",
-        
-        # fluidRow(
-        #   boxPlus(# processing parameters
-        #     width = 12, # bootstrap grid system (12 columns total)
-        #     title = "Elaboration parameters", 
-        #     closable = FALSE, status = "info", solidHeader = FALSE, collapsible = TRUE,
-        #     enable_sidebar = TRUE,sidebar_width = 25,sidebar_start_open = FALSE,
-        #     sidebar_content = tagList(
-        #       tags$p("Upload a Digital Elevation Model (DEM) raster file (.tif), then tune the parameters to adjust the 'Elephant Skin' (Hillshade) map according to your needs"),
-        #       #tags$p("Default par"),
-        #       tags$p(tags$b("Press i to collapse this slidebar."))
-        #     ),
-        #     style = "padding-left: 10px;padding-right: 10px;"
-        #     #--- contents ---
-        #     # ,fileInput("file1", "Choose Digital Elevation Model File (raster image)",
-        #     #           multiple = FALSE, accept = c("*/*","*,*",".*"),width="30%"),
-        #     # selectInput("mode", "choose mode",choices = choices, width="30%"),
-        #     # sliderInput("z","Vertical exaggeration",min = 1,max = 50,value = 1),
-        #     # sliderInput("az","Azimuth of the light",min = 1,max = 360,value = 315),
-        #     # sliderInput("alt","Altitude of the light",min = 0,max = 90,value = 45)
-        #   )),
-        
-        #fluidRow(
-        #   boxPlus(width = 12,collapsible = TRUE,
-        #           title="commands",
-        #           box(width=4, 
-        #                  fileInput("file1", "Choose Digital Elevation Model File (raster image)",
-        #                                     multiple = FALSE, accept = c("*/*","*,*",".*"))
-        #               ),
-        #           box(width=4, 
-        #                  disabled(actionButton("doPlotMap","-> Compute and plot output map ->", style="margin-bottom:15px;display:block;margin:26px 0 15px 0;"))
-        #               ),
-        #           box(width=4,
-        #               disabled(downloadButton("downloadData", "Download result")))
-        #   )
-        # ),
         fluidRow(
           
           boxPlus(# inputs menu
@@ -168,11 +143,15 @@ dashboardPagePlus(
             ),
             style = "padding: 0 10px;",
             plotOutput("mapImg")
-          )
+          ),
           
+          boxPlus(
+            width=12,
+            leafletOutput("mapleaflet")
+          )
           
         )#end fluidRow
       )#end tabItem
     )#end tabItems
   )#end dashboardBody
-)
+)#end dashboardPagePlus

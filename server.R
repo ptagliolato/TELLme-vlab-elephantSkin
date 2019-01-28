@@ -102,6 +102,21 @@ shinyServer(function(input, output, session) {
           plot(r,col=gray.colors(256))
       })
     )
+    
+    #browser()
+    output$mapleaflet<-renderLeaflet({
+    
+      l <- mapview::mapview(r[[1]])@map
+      l
+    #  newprog<-CRS("+init=epsg:3857")
+    #  rr<-projectRaster(r,crs=newprog)
+      #leaflet() %>% addTiles() %>% setView(0, 0, 2) %>% leaflet::addRasterImage(projectRasterForLeaflet(raster(r),method = "bilinear"))
+      
+      
+      # %>% leaflet::addRasterImage(projectRasterForLeaflet(rr,method = "bilinear"))
+      # l <- l  %>%  pippo
+    })
+    
   })
 
   output$downloadData<-downloadHandler(
