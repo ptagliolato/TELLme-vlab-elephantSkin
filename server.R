@@ -18,6 +18,12 @@ palette4slope<-colorRampPalette(colors4slope,bias=1,interpolate="spline")
 
 options(shiny.maxRequestSize=1000*1024^2) 
 shinyServer(function(input, output, session) {
+  #hack
+  
+  #browser()
+  lf<-leaflet()%>%addTiles() 
+  
+  
   
   currentProcessedRaster<-reactive({
     if(input$doPlotMap!=0){
@@ -75,7 +81,10 @@ shinyServer(function(input, output, session) {
     return(raster(input_dem))
   })
   
-  observeEvent(currentInputRaster(),{enable("doPlotMap")})
+  observeEvent(currentInputRaster(),{
+    enable("doPlotMap")
+    #output$mapleaflet<-renderLeaflet(mapview::addExtent(lf,currentInputRaster()))
+  })
   
   observeEvent(currentProcessedRaster(),{enable("downloadData")})
   
@@ -83,10 +92,25 @@ shinyServer(function(input, output, session) {
   
   # plot input raster
   output$mapInput<-renderPlot({
+    
+    
     withProgress(message = 'Making plot...', value = 0.5,{
         plot(currentInputRaster(),col=gray.colors(256))
     })
+    
   })
+  
+  #output$mapleaflet<-renderLeaflet(lf)
+  #+mapview::mapview()@map)
+  
+  # # hack to only draw leaflet once
+  # output$mapleaflet <- renderLeaflet({
+  #   #browser()
+  #   if(req(not_rendered,cancelOutput=TRUE)) {
+  #     not_rendered <- FALSE
+  #     lf
+  #   }
+  # })
   
   #on button click process input raster and plot it
   observeEvent(input$doPlotMap, ignoreInit = TRUE, {
@@ -105,8 +129,12 @@ shinyServer(function(input, output, session) {
     
     #browser()
     output$mapleaflet<-renderLeaflet({
-    
-      l <- mapview::mapview(r[[1]])@map
+      if(input$mode=="slope") paletta=palette4slope
+      else paletta=mapviewGetOption("raster.palette")(256)
+      #l <- mapview::mapview(r[[1]])@map
+      l <- mapview(r[[1]],
+                   col.regions        = paletta
+           )@map
       l
     #  newprog<-CRS("+init=epsg:3857")
     #  rr<-projectRaster(r,crs=newprog)
