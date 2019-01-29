@@ -129,7 +129,7 @@ shinyServer(function(input, output, session) {
     
     #browser()
     output$mapleaflet<-renderLeaflet({
-      if(input$mode=="slope") paletta=palette4slope
+      if(isolate(input$mode=="slope")) paletta=palette4slope
       else paletta=mapviewGetOption("raster.palette")(256)
       #l <- mapview::mapview(r[[1]])@map
       l <- mapview(r[[1]],
