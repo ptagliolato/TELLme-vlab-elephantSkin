@@ -13,7 +13,8 @@ library(raster)
 library(rgdal)
 library(gdalUtils)
 
-colors4slope<-c("black","#ffb701","white")
+#colors4slope<-c("black","#ffb701","white")
+colors4slope<-c("#836e05", "#b79c17","#f1e9bc", "white")
 palette4slope<-colorRampPalette(colors4slope,bias=1,interpolate="spline")
 
 options(shiny.maxRequestSize=1000*1024^2) 
@@ -127,10 +128,10 @@ shinyServer(function(input, output, session) {
       })
     )
     
-    #browser()
+    #browser()  
     output$mapleaflet<-renderLeaflet({
       if(isolate(input$mode=="slope")) paletta=palette4slope
-      else paletta=mapviewGetOption("raster.palette")(256)
+      else paletta=gray.colors(256)#mapviewGetOption("raster.palette")(256)
       #l <- mapview::mapview(r[[1]])@map
       l <- mapview(r[[1]],
                    col.regions        = paletta
