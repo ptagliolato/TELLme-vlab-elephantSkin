@@ -25,18 +25,28 @@ shinyServer(function(input, output, session) {
   lf<-leaflet()%>%addTiles() 
   
   
-  
+  # TODO: gdal needs to read from file! Must adjust for API raster
   currentProcessedRaster<-reactive({
     if(input$doPlotMap!=0){
       isolate({
         disable("downloadData")
         withProgress(message = 'Computing map', value = 0.2,{
         
-        req(input$file1)
-        req(currentInputRaster())
+        #req(input$file1)
+        #req(currentInputRaster())
+        req(dem$dem)
+        datapath<-tempfile(fileext=".tif")
         
-        
-        input_dem<-input$file1$datapath
+        if(dem$source=='user'){
+          cat("from user")
+          input_dem<-input$file1$datapath
+        }
+        else{
+          cat("write raster file (source is not from user)")
+          raster::writeRaster(dem$dem,filename = datapath, format="GTiff")
+          input_dem<-datapath
+        }
+        # TODO: gdal needs to read from file!
         input_mode<-input$mode
         
         temptiff <- tempfile(fileext = ".tif")
@@ -74,13 +84,43 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  dem<-reactiveValues()
+  
+  observeEvent(input$getRasterFromAPI, ignoreInit = TRUE, {
+    cat(input$country)
+    
+    #getRasterFromAPI()
+    # bbox <- c(xmin = 8.49941, 
+    #           ymin = 44.68090,
+    #           xmax = 11.42868,
+    #           ymax = 46.63806)
+    # sf_bbox <- st_bbox(bbox, crs = 4326) %>% 
+    #   sf::st_as_sfc() %>% 
+    #   sf::st_sf()
+    
+    path<-tempdir()
+    dem$dem <- raster::getData('alt', country=input$country, path=path, mask=TRUE)
+    dem$source <- "http://srtm.csi.cgiar.org/"
+  })
+  
+  observeEvent(input$file1, ignoreInit = TRUE, {
+    input_dem<-input$file1$datapath
+    cat(input$file1$datapath)
+    dem$dem <- raster::raster(input_dem)
+    dem$source <- "user"
+  })
   
   currentInputRaster<-reactive({
-    req(input$file1)
-    
-    input_dem<-input$file1$datapath
-    return(raster(input_dem))
+    req(dem$dem)
+    return(dem$dem)
   })
+  
+  # currentInputRaster<-reactive({
+  #   req(input$file1)
+  # 
+  #   input_dem<-input$file1$datapath
+  #   return(raster(input_dem))
+  # })
   
   observeEvent(currentInputRaster(),{
     enable("doPlotMap")

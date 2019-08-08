@@ -24,6 +24,7 @@ library(shinycssloaders)
 library(shinyjs)
 library(leaflet)
 library(mapview)
+library(raster)
 
 choices <- list("elephant skin (hillshade)" = "hillshade",
                 "golden map (slope)" = "slope"
@@ -33,6 +34,13 @@ choices <- list("elephant skin (hillshade)" = "hillshade",
                 #"TPI"="TPI"
                 #"roughness"="roughness"
 )
+
+{
+  countries <- raster::getData('ISO3')
+  countries <- countries[order(countries$NAME),]
+  countries_choice<-countries[,1]
+  names(countries_choice)<-countries[,2]
+}
 
 dashboardPagePlus(
   skin = "black-light",
@@ -106,8 +114,11 @@ dashboardPagePlus(
               )
             ),
             fluidRow(
+              column(width=6,
+                     selectInput("country","Select a country of interest to get the DEM for",choices = countries_choice),
+                     actionButton("getRasterFromAPI", "Get raster DEM for selected country")),
               column(
-                offset=6,
+                #offset=3,
                 width=3,
                 style="text-align:left;",
                 disabled(actionButton("doPlotMap","Compute and plot output map",icon("cog")))
