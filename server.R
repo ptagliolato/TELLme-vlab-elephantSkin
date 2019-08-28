@@ -12,12 +12,24 @@ library(shiny)
 library(raster)
 library(rgdal)
 library(gdalUtils)
+library(elevatr)
 
 #colors4slope<-c("black","#ffb701","white")
 colors4slope<-c("#836e05", "#b79c17","#f1e9bc", "white")
 palette4slope<-colorRampPalette(colors4slope,bias=1,interpolate="spline")
-
+plotInBbxSelector<-function(raster2plot,proxy){
+  #proxy<-bbxSelector1$proxymap()
+  #raster2plot<- raster::resample(currentInputRaster(),fact=4,expand=FALSE)
+  #rasterResampled<-
+  proxy%>%
+    clearShapes()%>%
+    clearImages()%>%
+    addRasterImage(raster2plot, opacity=0.7, group="inputDEM")  %>%
+    addLayersControl(baseGroups=c("OpenStreeMap","CartoDB"),
+                     overlayGroups="inputDEM")
+}
 options(shiny.maxRequestSize=1000*1024^2) 
+
 shinyServer(function(input, output, session) {
   #hack
   
@@ -52,6 +64,7 @@ shinyServer(function(input, output, session) {
         temptiff <- tempfile(fileext = ".tif")
         #browser()
         # check params depending on input_mode. Cf. https://www.gdal.org/gdaldem.html
+        
         if(input_mode=="hillshade"){
           out <- gdalUtils::gdaldem(mode=input_mode,
                                     input_dem=input_dem, 
@@ -86,8 +99,55 @@ shinyServer(function(input, output, session) {
   
   dem<-reactiveValues()
   
+  
+  bbxSelector1<-callModule(bbxSelector, "bbxSelectorId", reactive({input$file1}))
+  
+  zoomlevel<-reactive({
+    input$zlevel
+  })
+  
+  # enable when bbx actually selected
+  observeEvent(bbxSelector1$bbx(),{enable("getRasterFromAPI")})
+  
   observeEvent(input$getRasterFromAPI, ignoreInit = TRUE, {
-    cat(input$country)
+    progress <- shiny::Progress$new()
+    # Make sure it closes when we exit this reactive, even if there's an error
+    on.exit(progress$close())
+    progress$set(message = "Downloading data from remote server...", value = 0)
+    #cat(input$bbxSelectorId)
+    tryCatch(
+      {
+        dem$dem <-elevatr::get_elev_raster(bbxSelector1$bbx_df(), prj=bbxSelector1$crs_string(),z=zoomlevel(), clip = "bbox")
+        dem$source <- "http://s3.amazonas.com/"
+        plotInBbxSelector(dem$dem,bbxSelector1$proxymap())
+        # proxy<-bbxSelector1$proxymap()
+        # proxy%>%
+        #   clearShapes()%>%
+        #   clearImages()%>%
+        #   addRasterImage(dem$dem, opacity=0.7, group="inputDEM")  %>%
+        #   addLayersControl(baseGroups=c("OpenStreeMap","CartoDB"),
+        #                    overlayGroups="inputDEM")
+      },
+      error=function(e){
+        cat(paste(e))
+      },
+      finally={}
+    )
+    
+    
+    
+    # observe({
+    #   proxy<-bbxSelector1$proxymap()
+    #   raster2plot<- raster::resample(currentInputRaster(),fact=4,expand=FALSE)
+    #   #rasterResampled<-
+    #   proxy%>%
+    #     clearShapes()%>%
+    #     clearImages()%>%
+    #     addRasterImage(raster2plot, opacity=0.7, group="inputDEM")  %>%
+    #     addLayersControl(baseGroups=c("OpenStreeMap","CartoDB"),
+    #                      overlayGroups="inputDEM")
+    # })
+    
     
     #getRasterFromAPI()
     # bbox <- c(xmin = 8.49941, 
@@ -98,9 +158,9 @@ shinyServer(function(input, output, session) {
     #   sf::st_as_sfc() %>% 
     #   sf::st_sf()
     
-    path<-tempdir()
-    dem$dem <- raster::getData('alt', country=input$country, path=path, mask=TRUE)
-    dem$source <- "http://srtm.csi.cgiar.org/"
+    # path<-tempdir()
+    # dem$dem <- raster::getData('alt', country=input$country, path=path, mask=TRUE)
+    # dem$source <- "http://srtm.csi.cgiar.org/"
   })
   
   observeEvent(input$file1, ignoreInit = TRUE, {
@@ -108,6 +168,12 @@ shinyServer(function(input, output, session) {
     cat(input$file1$datapath)
     dem$dem <- raster::raster(input_dem)
     dem$source <- "user"
+  })
+  
+  currentInputIsFileFromUser<-reactive({
+    req(dem$source=="user")
+    cat(dem$source)
+    return(dem$source=="user")
   })
   
   currentInputRaster<-reactive({

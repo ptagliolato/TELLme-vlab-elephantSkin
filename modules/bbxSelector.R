@@ -6,11 +6,11 @@ library(leaflet)
 library(leaflet.extras)
 
 
-bbxSelectorUI <- function(id, label = "select bounding box") {
+bbxSelectorUI <- function(id, label = "select bounding box", height=400) {
   ns <- NS(id)
   
   tagList(
-    leafletOutput(ns("mapleaflet"))
+    leafletOutput(ns("mapleaflet"), height=height)
     #,
     # column(width = 3, style = "text-align:left", disabled(textInput(
     #   ns("bbxN"), "NW-lat"
@@ -35,8 +35,8 @@ bbxSelector <- function(input, output, session, reactiveToClearTheMap) {
   
   
   output$mapleaflet <- renderLeaflet({
-    leaflet() %>% #addTiles() %>%
-      addProviderTiles(providers$CartoDB.Positron) %>%
+    leaflet() %>% addTiles(group="OpenStreetMap") %>%
+      addProviderTiles(providers$CartoDB.Positron, group="CartoDB") %>%
       setView(0, 0, 1) %>%  addSearchOSM() %>%
       addDrawToolbar(
         targetGroup = "draw",
@@ -51,7 +51,9 @@ bbxSelector <- function(input, output, session, reactiveToClearTheMap) {
           weight = 3
         )),
         singleFeature = TRUE
-      )
+      )%>%
+      addLayersControl(baseGroups=c("OpenStreetMap","CartoDB"))
+    
   })
   
   # RV reactive values. It contains the slots "layers" (list of downloaded layers - sp objects)
@@ -152,12 +154,14 @@ bbxSelector <- function(input, output, session, reactiveToClearTheMap) {
   # reset the layers (in the map and in the RV layers slot) when bbx() changes 
   {
     clearTheMap<-function(){
+      cat("bbxSelector - ClearTheMap\n")
       proxy <- proxymap()#leafletProxy("mapleaflet")
       clearShapes(proxy)
       clearImages(proxy)
       RV$layers = list()
       RV$layersPresent = FALSE
-      proxy %>% leaflet::removeLayersControl()
+      proxy %>% addLayersControl(baseGroups=c("OpenStreetMap","CartoDB"))
+      #%>% leaflet::removeLayersControl()
     }
     
     observeEvent(bbx(), {
@@ -168,6 +172,7 @@ bbxSelector <- function(input, output, session, reactiveToClearTheMap) {
     #  is there any way to reset layers even from the including app?
     observeEvent(reactiveToClearTheMap(),{
       req(proxymap())
+      cat("bbxSelector: triggered reactiveToClearTheMap")
       clearTheMap()
     }, ignoreInit = TRUE)
     
