@@ -42,6 +42,29 @@ choices <- list("elephant skin (hillshade)" = "hillshade",
   names(countries_choice)<-countries[,2]
 }
 
+panels.about_text<- shiny::helpText(
+  p("Obtain and process Digital Elevation Model data with gdaldem algorithms and produce 'Elephant Skin' and 'Golden Map' to use as base layers of TELLme Metropolitan Cartography maps."),
+  h4("Usage"), 
+  div(style="font-size:smaller;",
+      p("1. Select the source DEM. You can select the following sources:"),
+      p(style="margin-left:0.5em;"," - (file) upload a tiff-image file"),
+      p(style="margin-left:0.5em;"," - (from API) select a bounding box (click on the black-square-icon control in the map and draw a rectangle), set the desired resolution, click the button to obtain the DEM from", a("AWS Open Data Terrain Tiles API", href="https://registry.opendata.aws/terrain-tiles/")),
+      p("2. Choose the desidered processing (mode) and tune the settings according to your needs. Click 'Compute and plot output map' button."),
+      p("3. See the resulting output. When you are satisfied, click the \"Download results\" button to obtain the output raster (geotiff image)" )
+      ,h4("Credits"), p("Application developed for the TELLme ERASMUS+ project, O4. See"),a("source code repository on github",href="https://github.com/ptagliolato/TELLme-vlab-elephantSkin")
+  )
+)
+
+panels.troubleshooting_text<-shiny::helpText(p(style="font-size:smaller;",
+                                               "If you incur in any issue, please consider the following.",
+                                               "Most common problems are due to input dimensions:",
+                                               "The bigger the bounding box you select and the higher the requested resolution, the longer the time the application needs to wait the results for.",
+                                               "Note also that not all the requests could be handled by the remote service (e.g. too big bounding boxes).",
+                                               "If you are using a TELLme Virtual Lab remote deployment, you could also incur in troubles due to a high number of users concurrently connected to the server.",
+                                               "Resources are limited, but you or your organization could consider to deploy the application on your own machine (see Credits in the \"About\" tab to obtain the code)."
+                                               ))
+
+
 dashboardPagePlus(
   skin = "black-light",
   collapse_sidebar = FALSE,
@@ -59,32 +82,18 @@ dashboardPagePlus(
     rightSidebarIcon = "gears"
   ),
   rightsidebar=rightSidebar(
-    #fileInput("file1", "Choose Digital Elevation Model File (raster image)",
-    #                      multiple = FALSE, accept = c("*/*","*,*",".*")),
-    #            selectInput("mode", "choose mode",choices = choices),
-    
-    # sliderInput("z","Vertical exaggeration",min = 1,max = 50,value = 1),
-    # sliderInput("az","Azimuth of the light",min = 1,max = 360,value = 315),
-    # sliderInput("alt","Altitude of the light",min = 0,max = 90,value = 45)
-    
+    rightSidebarTabContent(id="help", icon="info", title="About", active = TRUE, 
+                           panels.about_text),
+    rightSidebarTabContent(id="troubleshooting", icon="fire-extinguisher", title="Troubleshooting",
+                           panels.troubleshooting_text
+    )
   ),
   sidebar=dashboardSidebar(
     collapsed = FALSE,
-    disable = FALSE,
+    disable = TRUE,
     width = 0,
     sidebarMenu(
       menuItem("Elaboration", tabName = "site", icon = icon("map", lib = "font-awesome"))
-      #menuItem("Map", tabName = "map", icon = icon("map", lib = "font-awesome"))
-      # ,
-      # dropdownBlock(
-      #   fileInput("file1", "Choose Digital Elevation Model File (raster image)",
-      #             multiple = FALSE, accept = c("*/*","*,*",".*")),
-      #   selectInput("mode", "choose mode",choices = choices),
-      #   sliderInput("z","Vertical exaggeration",min = 1,max = 50,value = 1),
-      #   sliderInput("az","Azimuth of the light",min = 1,max = 360,value = 315),
-      #   sliderInput("alt","Altitude of the light",min = 0,max = 90,value = 45),
-      #   id="ss",icon = icon("map", lib = "font-awesome"),title="inputs"
-      # )
     )
   ),
   
