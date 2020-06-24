@@ -75,7 +75,7 @@ shinyServer(function(input, output, session) {
         else if(input_mode=="slope"){
           out <- gdalUtils::gdaldem(mode=input_mode,
                                     input_dem=input_dem, 
-                                    output=temptiff,
+                                    output=temptiff,p=TRUE,
                                     output_Raster=TRUE,verbose=TRUE, b=1, s=111120,compute_edges = TRUE
           )
           
