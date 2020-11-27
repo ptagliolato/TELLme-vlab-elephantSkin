@@ -48,10 +48,29 @@ panels.about_text<- shiny::helpText(
   div(style="font-size:smaller;",
       p("1. Select the source DEM. You can select the following sources:"),
       p(style="margin-left:0.5em;"," - (file) upload a tiff-image file"),
-      p(style="margin-left:0.5em;"," - (from API) select a bounding box (click on the black-square-icon control in the map and draw a rectangle), set the desired resolution, click the button to obtain the DEM from", a("AWS Open Data Terrain Tiles API", href="https://registry.opendata.aws/terrain-tiles/")),
+      p(style="margin-left:0.5em;"," - (from API) select a bounding box (click on the black-square-icon control in the map and draw a rectangle), set the desired resolution, click the button to obtain the DEM from", 
+        a("AWS Open Data Terrain Tiles API", 
+          href="https://registry.opendata.aws/terrain-tiles/", 
+          target="_blank")),
       p("2. Choose the desidered processing (mode) and tune the settings according to your needs. Click 'Compute and plot output map' button."),
-      p("3. See the resulting output. When you are satisfied, click the \"Download results\" button to obtain the output raster (geotiff image)" )
-      ,h4("Credits"), p("Application developed for the TELLme ERASMUS+ project, O4. See"),a("source code repository on github",href="https://github.com/ptagliolato/TELLme-vlab-elephantSkin")
+      p("3. See the resulting output. When you are satisfied, click the \"Download results\" button to obtain the output raster (geotiff image)" ),
+      h4("Guidelines for metadata lineage field of downloaded files"),
+      p("Cite the source DEM file, the gdaldem algorithm you choose (hillshade or slope) and the present application (see credits section).",
+        "If you choose the remote service source, please obtain licence information and citation instructions",
+        " starting from the documentation at the url in point 1. In fact, multiple sources concur to the DEM coverage, so the exact citation of original DEM data depends on the bounding box"),
+      p("Elaboration of DEM from AWS Open Data Terrain Tiles API (https://registry.opendata.aws/terrain-tiles/).",
+        "Elaborated with gdaldem algorithms through TELLme Project Virtual Lab tool (DOI: 10.5281/zenodo.3741898)"),
+      h4("Credits"), 
+      p("Application developed for the TELLme ERASMUS+ project, O4. See",
+        a("source code repository on github",
+          href="https://github.com/ptagliolato/TELLme-vlab-elephantSkin", 
+          target="_blank")
+      ),
+      p("Please cite:", 
+        a("DOI: 10.5281/zenodo.3741898",
+          href="https://doi.org/10.5281/zenodo.3741898",
+          target="_blank")
+      )
   )
 )
 
