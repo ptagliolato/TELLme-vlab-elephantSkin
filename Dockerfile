@@ -1,9 +1,9 @@
-FROM ptagliolato/r-spatial-base:1.0.0
+FROM ptagliolato/r-spatial-base:1.0.2
 RUN mkdir /root/TELLme-vlab-elephantSkin
 COPY ui.R root/TELLme-vlab-elephantSkin/ui.R
 COPY server.R root/TELLme-vlab-elephantSkin/server.R
 COPY global.R root/TELLme-vlab-elephantSkin/global.R
-COPY modules/bbxSelector.R root/TELLme-vlab-elephantSkin/bbxSelector.R
+COPY modules/bbxSelector.R root/TELLme-vlab-elephantSkin/modules/bbxSelector.R
 COPY Rprofile.site /usr/lib/R/etc/
 
 # set shiny listen on port 3838 with Rprofile.site provided
