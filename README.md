@@ -14,8 +14,20 @@ Obtain and process Digital Elevation Model data with gdaldem algorithms and prod
 2. Choose the desidered processing (mode) and tune the settings according to your needs. Click 'Compute and plot output map' button.
 3. See the resulting output. When you are satisfied, click the "Download results" button to obtain the output raster (geotiff image)
 
-### Installation with Docker
+### Usage with Docker
 (TODO)
+Build your own docker image
+sudo docker build -t tellme-vlab-elephantskin .
+
+or pull a ready-to-use image from docker hub registry
+
+sudo docker pull ptagliolato/tellme-vlab-elephantskin[:<version>]
+
+Prepare your env file: copy the env.example file in this folder, replace the variable values and save it with the name you prefer (e.g. "env")
+
+Run a new container on port 80
+sudo docker run --env-file=env -p 80:3838 [ptagliolato/]tellme-vlab-elephantskin[:<version>]
+
 
 ### Guidelines for metadata lineage field of downloaded files
 
@@ -32,3 +44,5 @@ The application is being developed by Paolo Tagliolato and Alessandro Oggioni ([
 
 Please cite: DOI: 10.5281/zenodo.3741898
 
+#### Support contact
+For support or suggestions you can use the GitHub Issue Tracker or via email (tagliolato.p(at)irea.cnr.it)
