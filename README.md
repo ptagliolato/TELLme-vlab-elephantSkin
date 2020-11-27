@@ -46,7 +46,7 @@ The application is being developed by Paolo Tagliolato and Alessandro Oggioni ([
 Please cite: DOI: 10.5281/zenodo.3741898
 
 ### Acknowledgements
-The authors whish to acknowledge the contribution of Alessandro Musetta to the "Elephant Skin" app in its ideation phase.
+The authors wish to acknowledge the contribution of Alessandro Musetta to the "Elephant Skin" app in its ideation phase.
 
 #### Support contact
 For support or suggestions you can use the GitHub Issue Tracker or via email (tagliolato.p(at)irea.cnr.it)
