@@ -23,7 +23,7 @@ In fact, multiple sources concur to the DEM coverage, so the exact citation of o
 Elaboration of DEM from AWS Open Data Terrain Tiles API (https://registry.opendata.aws/terrain-tiles/). Elaborated with gdaldem algorithms through TELLme Project Virtual Lab tool (DOI: 10.5281/zenodo.3741898)
 
 # Credits
-Application developed for the TELLme ERASMUS+ project, O4. See source code repository on github.
+Application developed within the TELLme ERASMUS+ project Gran Agreement Number:2017-1-IT02-KA203-036974, output O4. 
 
 Please cite: DOI: 10.5281/zenodo.3741898
 
