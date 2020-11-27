@@ -4,17 +4,20 @@
 # TELLme-vlab-elephantSkin
 Shiny App for computing the "Elephant skin" (hillshade) of a given DEM
 
-# About
+## About
 Obtain and process Digital Elevation Model data with gdaldem algorithms and produce 'Elephant Skin' and 'Golden Map' to use as base layers of TELLme Metropolitan Cartography maps.
 
-# Usage
+## Usage
 1. Select the source DEM. You can select the following sources:
 - (file) upload a tiff-image file
 - (from API) select a bounding box (click on the black-square-icon control in the map and draw a rectangle), set the desired resolution, click the button to obtain the DEM from AWS Open Data Terrain Tiles API
 2. Choose the desidered processing (mode) and tune the settings according to your needs. Click 'Compute and plot output map' button.
 3. See the resulting output. When you are satisfied, click the "Download results" button to obtain the output raster (geotiff image)
 
-# Guidelines for metadata lineage field of downloaded files
+### Installation with Docker
+(TODO)
+
+### Guidelines for metadata lineage field of downloaded files
 
 Cite the source DEM file, the gdaldem algorithm you choose (hillshade or slope) and the present application (see credits section). 
 If you choose the remote service source, please obtain licence information and citation instructions starting from the documentation at the url in point 1.
@@ -22,10 +25,10 @@ In fact, multiple sources concur to the DEM coverage, so the exact citation of o
 
 Elaboration of DEM from AWS Open Data Terrain Tiles API (https://registry.opendata.aws/terrain-tiles/). Elaborated with gdaldem algorithms through TELLme Project Virtual Lab tool (DOI: 10.5281/zenodo.3741898)
 
-# Credits
+## Credits
 Application developed within the TELLme ERASMUS+ project Gran Agreement Number:2017-1-IT02-KA203-036974, output O4. 
+
+The application is being developed by Paolo Tagliolato and Alessandro Oggioni ([IREA-CNR](http://www.irea.cnr.it)). It is released under the [GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html) (GPL‑3).
 
 Please cite: DOI: 10.5281/zenodo.3741898
 
-# Installation with Docker
-(TODO)
