@@ -54,20 +54,13 @@ panels.about_text<- shiny::helpText(
           target="_blank")),
       p("2. Choose the desidered processing (mode) and tune the settings according to your needs. Click 'Compute and plot output map' button."),
       p("3. See the resulting output. When you are satisfied, click the \"Download results\" button to obtain the output raster (geotiff image)" ),
-      h4("Guidelines for metadata lineage field of downloaded files"),
-      p("Cite the source DEM file, the gdaldem algorithm you choose (hillshade or slope) and the present application (see credits section).",
-        "If you choose the remote service source, please obtain licence information and citation instructions",
-        " starting from the documentation at the url in point 1. In fact, multiple sources concur to the DEM coverage, so the exact citation of original DEM data depends on the bounding box."),
-      p("Example: Elaboration of DEM from AWS Open Data Terrain Tiles API (https://registry.opendata.aws/terrain-tiles/).",
-        "Source data: DEM from EU-DEM. Produced using Copernicus data and information funded by the European Union - EU-DEM layers.",
-        "Elaborated with gdaldem algorithms through TELLme Project Virtual Lab tool (DOI: 10.5281/zenodo.3741898)"),
       h4("Credits"), 
-      p("Application developed for the TELLme ERASMUS+ project, O4. See",
-        a("source code repository on github",
+      p("Application developed for the TELLme ERASMUS+ project, O4. See source code repository on github",
+        a("ptagliolato/TELLme-vlab-elephantSkin",
           href="https://github.com/ptagliolato/TELLme-vlab-elephantSkin", 
           target="_blank")
       ),
-      p("Please cite:", 
+      p("Please see citation suggestion at:", 
         a("DOI: 10.5281/zenodo.3741898",
           href="https://doi.org/10.5281/zenodo.3741898",
           target="_blank")
@@ -84,6 +77,28 @@ panels.troubleshooting_text<-shiny::helpText(p(style="font-size:smaller;",
                                                "Resources are limited, but you or your organization could consider to deploy the application on your own machine (see Credits in the \"About\" tab to obtain the code)."
                                                ))
 
+panels.metadatasuggestion_text<-shiny::helpText(
+  h4("How to document lineage metadata of downloaded files"),
+  p("- Cite the source DEM file, the gdaldem algorithm you choose (hillshade or slope) and the present application (see credits section).",
+    br(),
+    "- If you choose the remote service source, please obtain licence information and citation instructions, starting from the documentation at ",
+       a("AWS Open Data Terrain Tiles API", 
+         href="https://registry.opendata.aws/terrain-tiles/", 
+         target="_blank"),
+    ". In fact, multiple sources concur to the DEM coverage, so the exact citation of original DEM data depends on the bounding box."
+  ),
+  p("Example:"),
+  p(style="font-size:smaller;","Elaboration of DEM from AWS Open Data Terrain Tiles API (https://registry.opendata.aws/terrain-tiles/).",
+    br(),"Source data: DEM from EU-DEM. Produced using Copernicus data and information funded by the European Union - EU-DEM layers.",
+    br(),"Elaborated with ", a("gdaldem algorithms", href="https://gdal.org/license.html", target="_blank"),
+    br(), "Workflow performed by TELLme Project Virtual Lab tool ElephantSkin (DOI: ", 
+    a("10.5281/zenodo.3741898", href="https://doi.org/10.5281/zenodo.3741898", target="_blank"),
+    ")"
+  )
+)
+                                                  
+                                               
+
 
 dashboardPagePlus(
   skin = "black-light",
@@ -93,7 +108,7 @@ dashboardPagePlus(
     title = tagList(
       tags$div(class = "logo-lg",
                tags$img(src = "http://tellmehub.get-it.it/static/img/logo1_200px.png", width = "80px", height = "40px"),
-               tags$span("TELLme Erasmus+ Project - Elephant Skin (Hillshade)")
+               tags$span("TELLme Erasmus+ Project - Elephant Skin (Hillshade) - version 1.1.0")
       )
     ),
     titleWidth = 400
@@ -105,8 +120,9 @@ dashboardPagePlus(
     rightSidebarTabContent(id="help", icon="info", title="About", active = TRUE, 
                            panels.about_text),
     rightSidebarTabContent(id="troubleshooting", icon="fire-extinguisher", title="Troubleshooting",
-                           panels.troubleshooting_text
-    )
+                           panels.troubleshooting_text),
+    rightSidebarTabContent(id="metadatasuggestion", icon="file-contract", title="Metadata lineage guidelines",
+                           panels.metadatasuggestion_text)
   ),
   sidebar=dashboardSidebar(
     collapsed = FALSE,
