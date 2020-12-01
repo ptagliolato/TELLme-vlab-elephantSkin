@@ -16,15 +16,23 @@ Obtain and process Digital Elevation Model data with gdaldem algorithms and prod
 
 ### Usage with Docker
 
-build the image:
-   sudo docker build -t tellme-vlab-elephantskin:<version> .
-run the container:
-   sudo docker run -it --rm -p 3838:3838 tellme-vlab-elephantskin:<version>
+Build the image and run a container:
 
-(or use the precompiled image from docker.io 
-   sudo docker run -p 80:3838 [ptagliolato/]tellme-vlab-elephantskin[:<version>]
-   sudo docker pull ptagliolato/tellme-vlab-elephantskin:<version>
-)
+    # clone this repository
+    git clone https://github.com/ptagliolato/TELLme-vlab-elephantSkin.git
+    cd TELLme-vlab-elephantSkin
+    
+    # note: the -t tells docker to "tag" the image as "tellme-vlab-elephantskin:<version>"
+    sudo docker build -t tellme-vlab-elephantskin:<version> .
+    
+    # note: if you run with --rm the container will be removed after stop (the image will not)
+    sudo docker run --rm -p 3838:3838 tellme-vlab-elephantskin:<version>
+
+You can also use the precompiled image from docker.io:
+
+    sudo docker pull ptagliolato/tellme-vlab-elephantskin:<version>
+    sudo docker run -it --rm -p 3838:3838 ptagliolato/tellme-vlab-elephantskin:<version>
+    
 open your browser (if you are running the container in your machine) at the url:
    http://127.0.0.1:3838/
 
