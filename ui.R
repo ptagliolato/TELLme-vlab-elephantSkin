@@ -61,8 +61,8 @@ panels.about_text<- shiny::helpText(
           target="_blank")
       ),
       p("Please see citation suggestion at:", 
-        a("DOI: 10.5281/zenodo.3741898",
-          href="https://doi.org/10.5281/zenodo.3741898",
+        a("DOI: 10.5281/zenodo.3741897",
+          href="https://doi.org/10.5281/zenodo.3741897",
           target="_blank")
       )
   )
@@ -92,7 +92,7 @@ panels.metadatasuggestion_text<-shiny::helpText(
     br(),"Source data: DEM from EU-DEM. Produced using Copernicus data and information funded by the European Union - EU-DEM layers.",
     br(),"Elaborated with ", a("gdaldem algorithms", href="https://gdal.org/license.html", target="_blank"),
     br(), "Workflow performed by TELLme Project Virtual Lab tool ElephantSkin (DOI: ", 
-    a("10.5281/zenodo.3741898", href="https://doi.org/10.5281/zenodo.3741898", target="_blank"),
+    a("10.5281/zenodo.3741898", href="https://doi.org/10.5281/zenodo.3741897", target="_blank"),
     ")"
   )
 )
