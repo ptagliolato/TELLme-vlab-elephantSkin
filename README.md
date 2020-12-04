@@ -51,7 +51,7 @@ Application developed within the TELLme ERASMUS+ project Gran Agreement Number:2
 
 The application is being developed by Paolo Tagliolato and Alessandro Oggioni ([IREA-CNR](http://www.irea.cnr.it)). It is released under the [GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html) (GPL‑3).
 
-Please cite: DOI: 10.5281/zenodo.3741898
+Please get citation information for TELLme-vlab-elephantSkin at: [DOI: 10.5281/zenodo.3741897](https://doi.org/10.5281/zenodo.3741897)
 
 ### Acknowledgements
 The authors wish to acknowledge the contribution of Alessandro Musetta to the "Elephant Skin" app in its ideation phase.
