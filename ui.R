@@ -98,13 +98,11 @@ panels.metadatasuggestion_text<-shiny::helpText(
 )
                                                   
                                                
-
-
-dashboardPagePlus(
+shinydashboardPlus::dashboardPage(  
   skin = "black-light",
-  collapse_sidebar = FALSE,
-  sidebar_fullCollapse=TRUE,
-  dashboardHeaderPlus(
+  # collapse_sidebar = FALSE,
+  # sidebar_fullCollapse = TRUE,
+  header = dashboardHeader(
     title = tagList(
       tags$div(class = "logo-lg",
                tags$img(src = "http://tellmehub.get-it.it/static/img/logo1_200px.png", width = "80px", height = "40px"),
@@ -113,27 +111,45 @@ dashboardPagePlus(
     ),
     titleWidth = 400
     # fixed = FALSE,
-    ,enable_rightsidebar = TRUE,
-    rightSidebarIcon = "gears"
+    # enable_rightsidebar = TRUE,
+    # rightSidebarIcon = "gears"
   ),
-  rightsidebar=rightSidebar(
-    rightSidebarTabContent(id="help", icon="info", title="About", active = TRUE, 
-                           panels.about_text),
-    rightSidebarTabContent(id="troubleshooting", icon="fire-extinguisher", title="Troubleshooting",
-                           panels.troubleshooting_text),
-    rightSidebarTabContent(id="metadatasuggestion", icon="file-contract", title="Metadata lineage guidelines",
-                           panels.metadatasuggestion_text)
+  controlbar = dashboardControlbar(
+    skin = "dark",
+    width = 350,
+    controlbarMenu(
+      id = "menu",
+      controlbarItem(
+        id = "help",
+        icon = icon("info"),
+        title = "About",
+        # active = TRUE,
+        panels.about_text
+      ),
+      controlbarItem(
+        id = "troubleshooting",
+        icon = icon("fire-extinguisher"),
+        title = "Troubleshooting",
+        panels.troubleshooting_text
+      ),
+      controlbarItem(
+        id = "metadatasuggestion",
+        icon = icon("file-contract"),
+        title = "Metadata lineage guidelines",
+        panels.metadatasuggestion_text
+      ) 
+    )
   ),
-  sidebar=dashboardSidebar(
+  sidebar = dashboardSidebar(
     collapsed = FALSE,
-    disable = TRUE,
+    # disable = TRUE,
     width = 0,
     sidebarMenu(
       menuItem("Elaboration", tabName = "site", icon = icon("map", lib = "font-awesome"))
     )
   ),
   
-  body=dashboardBody(
+  body = dashboardBody(
     useShinyjs(),
     
     tabItems(
@@ -141,73 +157,79 @@ dashboardPagePlus(
         tabName = "site",
         fluidRow(
           
-          boxPlus(# inputs menu
-            width=12,
-            #title="input",
+          box(# inputs menu
+            width = 12,
+            #title = "input",
             background = "light-blue",
-            closable=FALSE,status = "primary", solidHeader = FALSE, collapsible = FALSE,
+            # closable = FALSE,
+            status = "primary",
+            solidHeader = TRUE,
+            collapsible = FALSE,
             #enable_sidebar = FALSE,
             #style = "background-color:black; color:white; padding: 0 10px;",
             fluidRow(
               column(
-                width=6, 
-                boxPlus(title="1. Select Digital Elevation Model input",
-                        closable = FALSE, 
-                        background = "black",
-                        width=12,
-                        tabsetPanel(
-                          tabPanel("from API", 
-                                   p("Select the bounding box, adjust the resolution and invoke remote API to obtain the Digital Elevation Model"),
-                                   bbxSelectorUI("bbxSelectorId","Bounding Box", height="20em"),
-                                   sliderInput("zlevel","DEM zoom level Resolution (1-14)", min=1, max=14, value=5),
-                                   p("(Please note that too large bounding boxes and too high resolution levels may lead to unexpected issues. Try lower values if necessary.)"),
-                                   disabled(actionButton("getRasterFromAPI", "Obtain DEM for selected bounding box"))
-                          ),
-                          tabPanel("from file", 
-                                   p("Select a Digital Elevation Model from your computer"),
-                                   fileInput("file1", "Choose Digital Elevation Model File (raster image)",
-                                             multiple = FALSE, accept = c("*/*","*,*",".*"))
-                                   
-                          )
-                        ),
-                        hr(),
-                        h4("Current Input image:"),
-                        div(style="border:1px solid white; border-radius:0.2em; margin-bottom:0.3em; padding: 0.2em;",
-                        plotOutput("mapInput", height="20em")
-                        )
+                width = 6, 
+                box(
+                  title="1. Select Digital Elevation Model input",
+                  # closable = FALSE, 
+                  background = "black",
+                  width=12,
+                  tabsetPanel(
+                    tabPanel("from API", 
+                             p("Select the bounding box, adjust the resolution and invoke remote API to obtain the Digital Elevation Model"),
+                             bbxSelectorUI("bbxSelectorId","Bounding Box", height="20em"),
+                             sliderInput("zlevel","DEM zoom level Resolution (1-14)", min=1, max=14, value=5),
+                             p("(Please note that too large bounding boxes and too high resolution levels may lead to unexpected issues. Try lower values if necessary.)"),
+                             disabled(actionButton("getRasterFromAPI", "Obtain DEM for selected bounding box"))
+                    ),
+                    tabPanel("from file", 
+                             p("Select a Digital Elevation Model from your computer"),
+                             fileInput("file1", "Choose Digital Elevation Model File (raster image)",
+                                       multiple = FALSE, accept = c("*/*","*,*",".*"))
+                             
+                    )
+                  ),
+                  hr(),
+                  h4("Current Input image:"),
+                  div(style="border:1px solid white; border-radius:0.2em; margin-bottom:0.3em; padding: 0.2em;",
+                  plotOutput("mapInput", height="20em")
+                  )
                 )
               ),
               column(
                 width=6,
-                boxPlus(title="2. Set Processing chain",
-                        closable = FALSE, 
-                        background = "black",
-                        width=12,
-                        selectInput("mode", "choose mode",choices = choices),
-                        
-                        conditionalPanel("input.mode=='hillshade'",
-                                         div(style="border:1px solid white; border-radius:0.2em; margin-bottom:0.3em; padding: 0.2em",
-                                         sliderInput("z","Vertical exaggeration",min = 1,max = 50,value = 1),
-                                         sliderInput("az","Azimuth of the light",min = 1,max = 360,value = 315),
-                                         sliderInput("alt","Altitude of the light",min = 0,max = 90,value = 45)           
-                                          #p("Advanced settings for elephant skin (hillshade) mode are available in the settings panel (click the gear icon in the top right part of the page to expand")
-                                         )),
-                        disabled(actionButton("doPlotMap","Compute and plot output map",icon("cog")))
+                box(
+                  title="2. Set Processing chain",
+                  # closable = FALSE, 
+                  background = "black",
+                  width = 12,
+                  selectInput("mode", "choose mode",choices = choices),
+                  
+                  conditionalPanel("input.mode=='hillshade'",
+                                   div(style="border:1px solid white; border-radius:0.2em; margin-bottom:0.3em; padding: 0.2em",
+                                   sliderInput("z","Vertical exaggeration",min = 1,max = 50,value = 1),
+                                   sliderInput("az","Azimuth of the light",min = 1,max = 360,value = 315),
+                                   sliderInput("alt","Altitude of the light",min = 0,max = 90,value = 45)           
+                                    #p("Advanced settings for elephant skin (hillshade) mode are available in the settings panel (click the gear icon in the top right part of the page to expand")
+                                   )),
+                  disabled(actionButton("doPlotMap","Compute and plot output map",icon("cog")))
                 
                 ),
-                boxPlus(title="3. Output",
-                        closable = FALSE, 
-                        background = "black",
-                        width=12,
-                        tabsetPanel(
-                          tabPanel(title="Map view",
-                            leafletOutput("mapleaflet")
-                          ),
-                          tabPanel(title="Image view",
-                                   plotOutput("mapImg")      
-                          )
-                        ),
-                        disabled(downloadButton("downloadData", "Download result"))
+                box(title="3. Output",
+                    # closable = FALSE, 
+                    background = "black",
+                    width=12,
+                    tabsetPanel(
+                      tabPanel(title="Map view",
+                               leafletOutput("mapleaflet")
+                      ),
+                      tabPanel(title="Image view",
+                               plotOutput("mapImg")      
+                      )
+                    ),
+                    disabled(downloadButton("downloadData", "Download result")
+                  )
                 )
               )
             ),
