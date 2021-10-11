@@ -1,5 +1,5 @@
 library(shiny)
-library(osmdata)
+#library(osmdata)
 library(sf)
 library(sp)
 library(leaflet)
